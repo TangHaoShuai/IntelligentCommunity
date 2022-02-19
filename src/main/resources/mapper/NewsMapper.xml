@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.haoshuai.intelligentcommunity.mapper.NewsMapper">
+    <!--       查询所有新闻-->
+    <select id="findNews" resultType="com.haoshuai.intelligentcommunity.entity.News">
+        select *
+        from news
+    </select>
+
+    <select id="selectPageVo" resultType="com.haoshuai.intelligentcommunity.entity.News">
+        SELECT *
+        FROM news
+    </select>
+    
+</mapper>
