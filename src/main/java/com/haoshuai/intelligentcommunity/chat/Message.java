@@ -1,46 +1,44 @@
 package com.haoshuai.intelligentcommunity.chat;
 
 import com.alibaba.fastjson.JSON;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
  * WebSocket 聊天消息类
  */
+
 public class Message {
 
-    public static final String ENTER = "ENTER";
-    public static final String SPEAK = "SPEAK";
-    public static final String QUIT = "QUIT";
+    public static final String ENTER = "ENTER"; //进入
+    public static final String SPEAK = "SPEAK"; //发言
+    public static final String QUIT = "QUIT";  //退出
 
     private String type;//消息类型
 
-    private String username; //发送人
-
+    private String s_name; //发送人
+    private String t_name; //接受人
     private String msg; //发送消息
 
     private int onlineCount; //在线用户数
 
-    public static String jsonStr(String type, String username, String msg, int onlineTotal) {
-        return JSON.toJSONString(new Message(type, username, msg, onlineTotal));
-    }
-
-    public Message(String type, String username, String msg, int onlineCount) {
+    public Message(String type, String s_name, String t_name, String msg, int onlineCount) {
         this.type = type;
-        this.username = username;
+        this.s_name = s_name;
+        this.t_name = t_name;
         this.msg = msg;
         this.onlineCount = onlineCount;
     }
 
-    public static String getENTER() {
-        return ENTER;
+    public Message() {
     }
 
-    public static String getSPEAK() {
-        return SPEAK;
+    public static String jsonStr(String type, String s_name,String t_name, String msg, int onlineTotal) {
+        return JSON.toJSONString(new Message(type, s_name,t_name, msg, onlineTotal));
     }
 
-    public static String getQUIT() {
-        return QUIT;
-    }
 
     public String getType() {
         return type;
@@ -50,12 +48,20 @@ public class Message {
         this.type = type;
     }
 
-    public String getUsername() {
-        return username;
+    public String getS_name() {
+        return s_name;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setS_name(String s_name) {
+        this.s_name = s_name;
+    }
+
+    public String getT_name() {
+        return t_name;
+    }
+
+    public void setT_name(String t_name) {
+        this.t_name = t_name;
     }
 
     public String getMsg() {
@@ -72,5 +78,16 @@ public class Message {
 
     public void setOnlineCount(int onlineCount) {
         this.onlineCount = onlineCount;
+    }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "type='" + type + '\'' +
+                ", s_name='" + s_name + '\'' +
+                ", t_name='" + t_name + '\'' +
+                ", msg='" + msg + '\'' +
+                ", onlineCount=" + onlineCount +
+                '}';
     }
 }
