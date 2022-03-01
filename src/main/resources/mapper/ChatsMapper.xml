@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.haoshuai.intelligentcommunity.mapper.ChatsMapper">
+    <resultMap id="chatsMap" type="com.haoshuai.intelligentcommunity.entity.Chats">
+        <result property="sName" column="s_name"/>
+        <result property="tName" column="t_name"/>
+        <result property="message" column="message"/>
+        <result property="date" column="date"/>
+        <result property="label" column="label"/>
+    </resultMap>
+    <select id="selectAll" resultType="com.haoshuai.intelligentcommunity.entity.Chats">
+        select * from chats where s_name = #{sName} and t_name = #{tName}
+    </select>
+</mapper>
