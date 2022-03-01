@@ -15,12 +15,15 @@ public class Message {
     public static final String ENTER = "ENTER"; //进入
     public static final String SPEAK = "SPEAK"; //发言
     public static final String QUIT = "QUIT";  //退出
+    public static final String NOTICE = "NOTICE"; //公告
+    public static final String HEARTBEAT = "HEARTBEAT"; //心跳
 
     private String type;//消息类型
 
     private String s_name; //发送人
     private String t_name; //接受人
     private String msg; //发送消息
+    private String t_date; // 发送时间
 
     private int onlineCount; //在线用户数
 
@@ -35,8 +38,17 @@ public class Message {
     public Message() {
     }
 
-    public static String jsonStr(String type, String s_name,String t_name, String msg, int onlineTotal) {
-        return JSON.toJSONString(new Message(type, s_name,t_name, msg, onlineTotal));
+    public Message(String type, String s_name, String t_name, String msg, String t_date, int onlineCount) {
+        this.type = type;
+        this.s_name = s_name;
+        this.t_name = t_name;
+        this.msg = msg;
+        this.t_date = t_date;
+        this.onlineCount = onlineCount;
+    }
+
+    public static String jsonStr(String type, String s_name, String t_name, String msg,String t_date,  int onlineTotal) {
+        return JSON.toJSONString(new Message(type, s_name, t_name, msg,t_date, onlineTotal));
     }
 
 
@@ -72,22 +84,19 @@ public class Message {
         this.msg = msg;
     }
 
+    public String getT_date() {
+        return t_date;
+    }
+
+    public void setT_date(String t_date) {
+        this.t_date = t_date;
+    }
+
     public int getOnlineCount() {
         return onlineCount;
     }
 
     public void setOnlineCount(int onlineCount) {
         this.onlineCount = onlineCount;
-    }
-
-    @Override
-    public String toString() {
-        return "Message{" +
-                "type='" + type + '\'' +
-                ", s_name='" + s_name + '\'' +
-                ", t_name='" + t_name + '\'' +
-                ", msg='" + msg + '\'' +
-                ", onlineCount=" + onlineCount +
-                '}';
     }
 }
