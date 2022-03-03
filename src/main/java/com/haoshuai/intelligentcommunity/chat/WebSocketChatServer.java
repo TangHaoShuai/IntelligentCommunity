@@ -56,6 +56,7 @@ public class WebSocketChatServer {
         sendMessageToAll(Message.jsonStr(Message.ENTER, s_name, "", s_name + "链接成功！当前在线人数:" + onlineSessions.size(), "", onlineSessions.size()));
         System.out.println(s_name + "链接成功！当前在线人数:" + onlineSessions.size());
         //上线以后 先去看看 有没有未读消息 然后推送给用户
+        List<Message> tmp = new ArrayList<>();
         for (int i = 0; i < tem_data.size(); i++) {
             Message message = tem_data.get(i);
             if (message.getT_name().equals(s_name)) {
@@ -73,9 +74,12 @@ public class WebSocketChatServer {
                 iChatsService.save(chats);
                 message.setType(Message.SPEAK);
                 sendMessageToUser(message);
-                tem_data.remove(i);
+//                tem_data.remove(i);
+            }else{
+                tmp.add(tem_data.get(i));
             }
         }
+        tem_data = tmp;
     }
 
     /**
