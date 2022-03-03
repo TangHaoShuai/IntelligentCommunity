@@ -32,4 +32,5 @@ package com.haoshuai.intelligentcommunity.entity;
 
     private String sex;
 
+    private String image;
 }

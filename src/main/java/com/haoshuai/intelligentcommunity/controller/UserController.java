@@ -38,8 +38,15 @@ public class UserController {
     }
 
     @PostMapping("getUsers")
-    public List<User> getUsers() {
-        return iUserService.list();
+    public List<User> getUsers(@RequestBody String ID) {
+        List<User> users = iUserService.list();
+        for (int i = 0; i < users.size(); i++) {
+            if (ID == null) return null;
+            if (users.get(i).getPhone().equals(ID)){
+                users.remove(i);
+            }
+        }
+        return users;
     }
 
     @PostMapping("addUser")
