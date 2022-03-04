@@ -4,7 +4,12 @@ package com.haoshuai.intelligentcommunity.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.haoshuai.intelligentcommunity.entity.Article;
+import com.haoshuai.intelligentcommunity.entity.ImgList;
+import com.haoshuai.intelligentcommunity.entity.User;
+import com.haoshuai.intelligentcommunity.entity.model.ArticleModel;
 import com.haoshuai.intelligentcommunity.service.IArticleService;
+import com.haoshuai.intelligentcommunity.service.IImgListService;
+import com.haoshuai.intelligentcommunity.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,9 +36,61 @@ public class ArticleController {
     @Autowired
     private IArticleService iArticleService;
 
+    @Autowired
+    IUserService iUserService;
+
+    @Autowired
+    IImgListService iImgListService;
+
     @PostMapping("getList")
-    public List<Article> getList() {
-        return iArticleService.list();
+    public List<ArticleModel> getList() {
+        List<ArticleModel> articleModels = new ArrayList<>();
+        List<Article> articles = iArticleService.list();
+        for (int i = 0; i < articles.size(); i++) {
+            QueryWrapper<User> wrapper = new QueryWrapper<>();
+            String phone = articles.get(i).getUserid();
+            wrapper.eq("phone", phone);
+            User user = iUserService.getOne(wrapper);
+            ArticleModel articleModel = new ArticleModel();
+            articleModel.setUuid(articles.get(i).getUuid());
+            articleModel.setUserid(articles.get(i).getUserid());
+            articleModel.setContent(articles.get(i).getContent());
+            articleModel.setImgid(articles.get(i).getImgid());
+            articleModel.setDate(articles.get(i).getDate());
+            articleModel.setUser(user);
+            QueryWrapper<ImgList> imgListQueryWrapper = new QueryWrapper<>();
+            imgListQueryWrapper.eq("imgid", articles.get(i).getImgid());
+            List<ImgList> imgLists = iImgListService.list(imgListQueryWrapper);
+            articleModel.setImgLists(imgLists);
+            articleModels.add(articleModel);
+        }
+        return articleModels;
+    }
+
+    @PostMapping("getOneArticle")
+    public ArticleModel getOneArticle(@RequestBody Map<String,String>map ) {
+        String id = map.get("id");
+        ArticleModel articleModel = new ArticleModel();
+        QueryWrapper<Article> articleQueryWrapper = new QueryWrapper<>();
+        articleQueryWrapper.eq("uuid",id);
+        Article article = iArticleService.getOne(articleQueryWrapper);
+//        Article
+        articleModel.setDate(article.getDate());
+        articleModel.setUserid(article.getUserid());
+        articleModel.setContent(article.getContent());
+        articleModel.setUuid(article.getUuid());
+        articleModel.setImgid(article.getImgid());
+//        user
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+        wrapper.eq("phone", article.getUserid());
+        User user = iUserService.getOne(wrapper);
+        articleModel.setUser(user);
+//        img_list
+        QueryWrapper<ImgList> imgListQueryWrapper = new QueryWrapper<>();
+        imgListQueryWrapper.eq("imgid", article.getImgid());
+        List<ImgList> imgLists = iImgListService.list(imgListQueryWrapper);
+        articleModel.setImgLists(imgLists);
+        return articleModel;
     }
 
     @PostMapping("addArticle")
