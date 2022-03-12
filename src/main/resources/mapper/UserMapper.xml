@@ -2,4 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.haoshuai.intelligentcommunity.mapper.UserMapper">
 
+    <select id="selectPageVo" resultType="com.haoshuai.intelligentcommunity.entity.User">
+        SELECT *
+        FROM user
+    </select>
 </mapper>

@@ -47,7 +47,7 @@ public class ImgListController {
     public void upImgList(ImgList imgList){
         UpdateWrapper<ImgList> wrapper = new UpdateWrapper<>();
         wrapper.eq("uuid",imgList.getUuid());
-        iImgListService.update(wrapper);
+        iImgListService.update(imgList,wrapper);
     }
 
     @PostMapping("deImgList")

@@ -22,11 +22,9 @@ public class Chats implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-
     private String sName;
 
     private String message;
-
 
     private String tName;
 
