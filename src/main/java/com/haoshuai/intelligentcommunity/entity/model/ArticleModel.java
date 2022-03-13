@@ -31,4 +31,10 @@ public class ArticleModel {
     private List<PraiseModel> praiseList; //点赞集合
 
     private List<CommentModel> commentList;//评论集合
+
+    private int praiseCount;  //点赞计数
+
+    private int readCount;  //阅读计数
+
+    private int commentCount; //评论计数
 }

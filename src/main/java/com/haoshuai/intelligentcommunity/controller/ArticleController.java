@@ -116,7 +116,7 @@ public class ArticleController {
             // Praise
             QueryWrapper<Praise> praiseQueryWrapper = new QueryWrapper<>();
             praiseQueryWrapper.eq("articleid", articles.get(i).getUuid());
-            List<Praise> praiseList = iPraiseService.list();
+            List<Praise> praiseList = iPraiseService.list(praiseQueryWrapper);
             List<PraiseModel> praiseModels = new ArrayList<>();
             for (Praise p : praiseList) {
                 PraiseModel praiseModel = new PraiseModel();
@@ -134,6 +134,22 @@ public class ArticleController {
             QueryWrapper<Comment> commentQueryWrapper = new QueryWrapper<>();
             commentQueryWrapper.eq("articleid", articles.get(i).getUuid());
             List<Comment> commentList = iCommentService.list(commentQueryWrapper);
+            //beg 添加点赞计数和评论计数
+            //每次查询readCount++
+            UpdateWrapper<Article> articleUpdateWrapper = new UpdateWrapper<>();
+            articleUpdateWrapper.eq("uuid", articles.get(i).getUuid());
+//            if (articles.get(i).getReadCount() == 0) {
+//                articles.get(i).setReadCount(1);
+//            } else {
+//                articles.get(i).setReadCount(articles.get(i).getReadCount() + 1);
+//            }
+            articles.get(i).setCommentCount(commentList.size());//添加评论计数
+            articles.get(i).setPraiseCount(praiseList.size());//添加点赞计数
+            iArticleService.update(articles.get(i), articleUpdateWrapper);//写进数据库
+            articleModel.setCommentCount(commentList.size());
+            articleModel.setReadCount(articles.get(i).getReadCount());
+            articleModel.setPraiseCount(praiseList.size());
+            //end
             List<CommentModel> commentModels = new ArrayList<>();
             for (Comment c : commentList) {
                 CommentModel commentModel = new CommentModel();
@@ -163,10 +179,10 @@ public class ArticleController {
     public ArticleModel getOneArticle(@RequestBody Map<String, String> map) {
         String id = map.get("id");
         ArticleModel articleModel = new ArticleModel();
+        //Article
         QueryWrapper<Article> articleQueryWrapper = new QueryWrapper<>();
         articleQueryWrapper.eq("uuid", id);
         Article article = iArticleService.getOne(articleQueryWrapper);
-//        Article
         articleModel.setDate(article.getDate());
         articleModel.setUserid(article.getUserid());
         articleModel.setContent(article.getContent());
@@ -182,7 +198,7 @@ public class ArticleController {
         imgListQueryWrapper.eq("imgid", article.getImgid());
         List<ImgList> imgLists = iImgListService.list(imgListQueryWrapper);
         articleModel.setImgLists(imgLists);
-        // Praise
+        // Praise点赞集合
         QueryWrapper<Praise> praiseQueryWrapper = new QueryWrapper<>();
         praiseQueryWrapper.eq("articleid", article.getUuid());
         List<Praise> praiseList = iPraiseService.list(praiseQueryWrapper);
@@ -199,10 +215,26 @@ public class ArticleController {
             praiseModels.add(praiseModel);
         }
         articleModel.setPraiseList(praiseModels);
-//        Comment
+        //Comment 评论集合
         QueryWrapper<Comment> commentQueryWrapper = new QueryWrapper<>();
         commentQueryWrapper.eq("articleid", article.getUuid());
         List<Comment> commentList = iCommentService.list(commentQueryWrapper);
+        //beg 添加点赞计数和评论计数和阅读计数
+        //每次查询readCount++
+        UpdateWrapper<Article> articleUpdateWrapper = new UpdateWrapper<>();
+        articleUpdateWrapper.eq("uuid", id);
+        if (article.getReadCount() == 0) {
+            article.setReadCount(1);
+        } else {
+            article.setReadCount(article.getReadCount() + 1);
+        }
+        article.setCommentCount(commentList.size());//添加评论计数
+        article.setPraiseCount(praiseList.size());//添加点赞计数
+        iArticleService.update(article, articleUpdateWrapper);//写进数据库
+        articleModel.setCommentCount(praiseList.size());
+        articleModel.setReadCount(praiseList.size());
+        articleModel.setPraiseCount(praiseList.size());
+        //end
         List<CommentModel> commentModels = new ArrayList<>();
         for (Comment c : commentList) {
             CommentModel commentModel = new CommentModel();
@@ -216,6 +248,7 @@ public class ArticleController {
             commentModel.setUser(user1);
             commentModels.add(commentModel);
         }
+
         //排序
         commentModels.sort(Comparator.comparing(CommentModel::getDate));
         Collections.reverse(commentModels);
