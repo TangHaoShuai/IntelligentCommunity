@@ -43,27 +43,40 @@ public class FileController {
 
     @PostMapping(value = "/fileUpload")
     @ResponseBody
-    public String fileUpload(@RequestParam(value = "file") MultipartFile file,@RequestParam("id")String id, Model model, HttpServletRequest request) {
+    public String fileUpload(@RequestParam(value = "file") MultipartFile file, @RequestParam("id") String id, @RequestParam("imgId") String imgId, Model model, HttpServletRequest request) {
         if (file.isEmpty()) {
             System.out.println("文件为空空");
         }
+
         String fileName = file.getOriginalFilename();  // 文件名
         String suffixName = fileName.substring(fileName.lastIndexOf("."));  // 后缀名
         String filePath = "D:\\TangHaoShuai\\Pictures\\vue_img\\"; // 上传后的路径
-        fileName = id + suffixName; // 新文件名
+        Long startTs = System.currentTimeMillis();//时间戳
+        fileName = id + startTs + suffixName; // 新文件名
         File dest = new File(filePath + fileName);
         if (!dest.getParentFile().exists()) {
             dest.getParentFile().mkdirs();
         }
+
+        String tempPath = filePath + imgId;
+        File file1 = new File(tempPath);
+        if (file1.exists()) {
+            try {
+                file1.delete();
+            } catch (Exception e) {
+                System.out.println("文件删除错误！" + e.getMessage());
+            }
+        }
+
         try {
             file.transferTo(dest);
             UpdateWrapper<User> userWrapper = new UpdateWrapper<>();
-            userWrapper.eq("phone",id);
+            userWrapper.eq("phone", id);
             QueryWrapper queryWrapper = new QueryWrapper();
-            queryWrapper.eq("phone",id);
+            queryWrapper.eq("phone", id);
             User user = iUserService.getOne(queryWrapper);
             user.setImage(fileName);
-            iUserService.update(user,userWrapper);
+            iUserService.update(user, userWrapper);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -71,9 +84,10 @@ public class FileController {
         model.addAttribute("filename", filename);
         return "succeed";
     }
+
     @PostMapping(value = "/imgFileUpload")
     @ResponseBody
-    public String imgFileUpload(@RequestParam(value = "file") MultipartFile file,@RequestParam("imgID")String imgID, Model model, HttpServletRequest request) {
+    public String imgFileUpload(@RequestParam(value = "file") MultipartFile file, @RequestParam("imgID") String imgID, Model model, HttpServletRequest request) {
         if (file.isEmpty()) {
             System.out.println("文件为空空");
         }
@@ -81,7 +95,7 @@ public class FileController {
         String fileName = file.getOriginalFilename();  // 文件名
         String suffixName = fileName.substring(fileName.lastIndexOf("."));  // 后缀名
         String filePath = "D:\\TangHaoShuai\\Pictures\\vue_img\\article_img\\"; // 上传后的路径
-        fileName = uuid+ suffixName; // 新文件名
+        fileName = uuid + suffixName; // 新文件名
         File dest = new File(filePath + fileName);
         if (!dest.getParentFile().exists()) {
             dest.getParentFile().mkdirs();
