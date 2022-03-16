@@ -3,6 +3,8 @@ package com.haoshuai.intelligentcommunity.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.haoshuai.intelligentcommunity.entity.*;
 import com.haoshuai.intelligentcommunity.entity.model.ArticleModel;
 import com.haoshuai.intelligentcommunity.entity.model.CommentModel;
@@ -91,9 +93,22 @@ public class ArticleController {
     }
 
     @PostMapping("getList")
-    public List<ArticleModel> getList() {
+    public PageEntity getList(@RequestBody Map<String,String> map) {
+        long current = Long.parseLong(map.get("current"));
+        long size = Long.parseLong(map.get("size"));
+        String userid = map.get("userid");
+        String content = map.get("content");
+        QueryWrapper<Article>queryWrapper = new QueryWrapper<>();
+        queryWrapper.like(StringUtils.isNotEmpty(userid),"userid",userid);
+        queryWrapper.like(StringUtils.isNotEmpty(content),"content",content);
+        Page<Article> page = new Page<>(current,size);
+        iArticleService.page(page,queryWrapper);
+        PageEntity pageEntity = new PageEntity(page);
+
+        List<Article> articles = (List<Article>) pageEntity.getList();
+
         List<ArticleModel> articleModels = new ArrayList<>();
-        List<Article> articles = iArticleService.list();
+
         for (int i = 0; i < articles.size(); i++) {
             ArticleModel articleModel = new ArticleModel();
             //        Article
@@ -172,7 +187,9 @@ public class ArticleController {
         //排序
         articleModels.sort(Comparator.comparing(ArticleModel::getDate));
         Collections.reverse(articleModels);
-        return articleModels;
+
+        pageEntity.setList(articleModels);
+        return pageEntity;
     }
 
     @PostMapping("getOneArticle")

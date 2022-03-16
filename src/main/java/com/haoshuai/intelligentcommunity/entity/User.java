@@ -37,7 +37,9 @@ public class User implements Serializable {
 
     private String house;
 
-    public User(String username, String password, Integer age, String uDescribe, String phone, String sex, String image, String house) {
+    private Integer propertyFee;
+
+    public User(String username, String password, Integer age, String uDescribe, String phone, String sex, String image, String house, Integer propertyFee) {
         this.username = username;
         this.password = password;
         this.age = age;
@@ -46,6 +48,7 @@ public class User implements Serializable {
         this.sex = sex;
         this.image = image;
         this.house = house;
+        this.propertyFee = propertyFee;
     }
 
     public User() {
@@ -116,6 +119,14 @@ public class User implements Serializable {
         this.house = house;
     }
 
+    public Integer getPropertyFee() {
+        return propertyFee;
+    }
+
+    public void setPropertyFee(Integer propertyFee) {
+        this.propertyFee = propertyFee;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -127,6 +138,7 @@ public class User implements Serializable {
                 ", sex='" + sex + '\'' +
                 ", image='" + image + '\'' +
                 ", house='" + house + '\'' +
+                ", propertyFee=" + propertyFee +
                 '}';
     }
 }
