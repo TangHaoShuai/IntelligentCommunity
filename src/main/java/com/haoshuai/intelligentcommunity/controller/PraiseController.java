@@ -2,8 +2,12 @@ package com.haoshuai.intelligentcommunity.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.haoshuai.intelligentcommunity.entity.Comment;
 import com.haoshuai.intelligentcommunity.entity.Praise;
+import com.haoshuai.intelligentcommunity.entity.User;
+import com.haoshuai.intelligentcommunity.entity.model.PraiseModel;
 import com.haoshuai.intelligentcommunity.service.IPraiseService;
+import com.haoshuai.intelligentcommunity.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,10 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.websocket.server.PathParam;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * <p>
@@ -34,10 +35,50 @@ public class PraiseController {
     @Autowired
     private IPraiseService iPraiseService;
 
+    @Autowired
+    private IUserService iUserService;
+
     @PostMapping("getPraises")
-    public List<Praise> getPraises() {
-        List list = iPraiseService.list();
-        return list;
+    public List<PraiseModel> getPraises(@RequestBody Praise praise){
+        List<PraiseModel> praiseModels = new ArrayList<>();
+        if (praise.getArticleid() != null && praise.getArticleid() !="" && praise.getUserid() != null && praise.getUserid() != ""){
+            QueryWrapper<Praise>queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("userid",praise.getUserid());
+            queryWrapper.eq("articleid",praise.getArticleid());
+            List<Praise> praiseList = iPraiseService.list(queryWrapper);
+
+            for (Praise p : praiseList) {
+                PraiseModel praiseModel = new PraiseModel();
+                praiseModel.setUserid(p.getUserid());
+                praiseModel.setArticleid(p.getArticleid());
+                praiseModel.setUuid(p.getUuid());
+                praiseModel.setDate(p.getDate());
+                QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+                userQueryWrapper.eq("phone", p.getUserid());
+                User user1 = iUserService.getOne(userQueryWrapper);
+                praiseModel.setUser(user1);
+                praiseModels.add(praiseModel);
+            }
+            return praiseModels;
+        }
+        return null;
+    }
+
+
+//    @PostMapping("getPraises")
+//    public List<Praise> getPraises() {
+//        List list = iPraiseService.list();
+//        return list;
+//    }
+
+    @PostMapping("deleteParam")
+    public boolean deleteParam(@RequestBody Praise praise) {
+        if (praise.getUuid() != null && praise.getUuid() != "") {
+            QueryWrapper<Praise> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("uuid", praise.getUuid());
+            return iPraiseService.remove(queryWrapper);
+        }
+        return false;
     }
 
     @PostMapping("getPathParam")

@@ -44,17 +44,29 @@ public class ImgListController {
     }
 
     @PostMapping("upImgList")
-    public void upImgList(ImgList imgList){
+    public void upImgList(ImgList imgList) {
         UpdateWrapper<ImgList> wrapper = new UpdateWrapper<>();
-        wrapper.eq("uuid",imgList.getUuid());
-        iImgListService.update(imgList,wrapper);
+        wrapper.eq("uuid", imgList.getUuid());
+        iImgListService.update(imgList, wrapper);
     }
 
     @PostMapping("deImgList")
-    public void deImgList(ImgList imgList){
+    public boolean deImgList(@RequestBody  ImgList imgList) {
+        if (imgList.getUuid() == null && imgList.getUuid() == ""){
+            return false;
+        }
         QueryWrapper<ImgList> wrapper = new QueryWrapper<>();
-        wrapper.eq("uuid",imgList.getUuid());
-        iImgListService.remove(wrapper);
+        wrapper.eq("uuid", imgList.getUuid());
+        String filePath = "D:\\TangHaoShuai\\Pictures\\vue_img\\article_img\\"; // 上传后的路径
+        imgList = iImgListService.getOne(wrapper);
+        String tempUrl = filePath + imgList.getImgUrl();
+        File file = new File(tempUrl);
+        if (file.exists()) {
+            file.delete();
+        } else {
+            return false;
+        }
+        return iImgListService.remove(wrapper);
     }
 
 }

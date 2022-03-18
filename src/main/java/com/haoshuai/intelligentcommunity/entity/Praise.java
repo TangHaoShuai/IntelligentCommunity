@@ -21,13 +21,13 @@ public class Praise implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private String articleid;
+    private String articleid; //文章ID
 
-    private String userid;
+    private String userid;  //点赞者ID
 
-    private String date;
+    private String date;  //时间
 
-    private String uuid;
+    private String uuid;  //uuid
 
 
 }

@@ -49,9 +49,15 @@ public class ArticleController {
     @Autowired
     ICommentService iCommentService;
 
+
+    /**
+     *
+     * @param map  id imgdi articleid uuid
+     * @return
+     */
     @PostMapping("deleteArticle")
     public String deleteArticle(@RequestBody Map<String, String> map) {
-        String id = map.get("id");
+        String id = map.get("imgid");
         String articleid = map.get("articleid");
         if (id != null && !id.equals("") && articleid != null && !articleid.equals("")) {
 //            Article
@@ -93,16 +99,16 @@ public class ArticleController {
     }
 
     @PostMapping("getList")
-    public PageEntity getList(@RequestBody Map<String,String> map) {
+    public PageEntity getList(@RequestBody Map<String, String> map) {
         long current = Long.parseLong(map.get("current"));
         long size = Long.parseLong(map.get("size"));
         String userid = map.get("userid");
         String content = map.get("content");
-        QueryWrapper<Article>queryWrapper = new QueryWrapper<>();
-        queryWrapper.like(StringUtils.isNotEmpty(userid),"userid",userid);
-        queryWrapper.like(StringUtils.isNotEmpty(content),"content",content);
-        Page<Article> page = new Page<>(current,size);
-        iArticleService.page(page,queryWrapper);
+        QueryWrapper<Article> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like(StringUtils.isNotEmpty(userid), "userid", userid);
+        queryWrapper.like(StringUtils.isNotEmpty(content), "content", content);
+        Page<Article> page = new Page<>(current, size);
+        iArticleService.page(page, queryWrapper);
         PageEntity pageEntity = new PageEntity(page);
 
         List<Article> articles = (List<Article>) pageEntity.getList();
@@ -135,6 +141,7 @@ public class ArticleController {
             List<PraiseModel> praiseModels = new ArrayList<>();
             for (Praise p : praiseList) {
                 PraiseModel praiseModel = new PraiseModel();
+                praiseModel.setUserid(p.getUserid());
                 praiseModel.setArticleid(p.getArticleid());
                 praiseModel.setUuid(p.getUuid());
                 praiseModel.setDate(p.getDate());
@@ -168,6 +175,7 @@ public class ArticleController {
             List<CommentModel> commentModels = new ArrayList<>();
             for (Comment c : commentList) {
                 CommentModel commentModel = new CommentModel();
+                commentModel.setUuid(c.getUuid());
                 commentModel.setArticleid(c.getArticleid());
                 commentModel.setMessage(c.getMessage());
                 commentModel.setDate(c.getDate());
@@ -222,6 +230,7 @@ public class ArticleController {
         List<PraiseModel> praiseModels = new ArrayList<>();
         for (Praise p : praiseList) {
             PraiseModel praiseModel = new PraiseModel();
+            praiseModel.setUserid(p.getUserid());
             praiseModel.setArticleid(p.getArticleid());
             praiseModel.setUuid(p.getUuid());
             praiseModel.setDate(p.getDate());
@@ -255,6 +264,7 @@ public class ArticleController {
         List<CommentModel> commentModels = new ArrayList<>();
         for (Comment c : commentList) {
             CommentModel commentModel = new CommentModel();
+            commentModel.setUuid(c.getUuid());
             commentModel.setArticleid(c.getArticleid());
             commentModel.setMessage(c.getMessage());
             commentModel.setDate(c.getDate());
@@ -296,15 +306,16 @@ public class ArticleController {
     }
 
     @PostMapping("upArticle")
-    public void upArticle(@RequestBody Article article) {
-        if (article.getUserid() == null) {
+    public boolean upArticle(@RequestBody Article article) {
+        if (article.getUuid() == null || article.getUuid() == "") {
             System.out.println("UUID is null");
-            return;
+            return false;
         }
         UpdateWrapper<Article> wrapper = new UpdateWrapper<>();
         wrapper.eq("uuid", article.getUuid());
-        iArticleService.update(article, wrapper);
+        return iArticleService.update(article, wrapper);
     }
+
 
     @PostMapping("deArticle")
     public void deArticle(@RequestBody Article article) {

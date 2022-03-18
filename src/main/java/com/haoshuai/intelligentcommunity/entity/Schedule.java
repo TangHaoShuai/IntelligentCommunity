@@ -7,7 +7,7 @@ package com.haoshuai.intelligentcommunity.entity;
 
 /**
 * <p>
-    * 
+    * 进度
     * </p>
 *
 * @author TangHaoShuai
