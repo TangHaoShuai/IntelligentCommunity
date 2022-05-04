@@ -23,12 +23,11 @@ import java.util.*;
 
 /**
  * <p>
- * 前端控制器
+ * 帖子 前端控制器
  * </p>
  *
  * @author TangHaoShuai
  * @since 2022-03-04
- * 帖子
  */
 @RestController
 @RequestMapping("/article")
@@ -51,8 +50,8 @@ public class ArticleController {
 
 
     /**
-     *
-     * @param map  id imgdi articleid uuid
+     * 删除文章
+     * @param map id imgdi articleid uuid
      * @return
      */
     @PostMapping("deleteArticle")
@@ -98,12 +97,23 @@ public class ArticleController {
         return "200";
     }
 
+    /**
+     * 获取文章集合
+     * @param map
+     * @return
+     */
     @PostMapping("getList")
     public PageEntity getList(@RequestBody Map<String, String> map) {
         long current = Long.parseLong(map.get("current"));
         long size = Long.parseLong(map.get("size"));
         String userid = map.get("userid");
         String content = map.get("content");
+        int tag = 0;
+        try {
+            tag = Integer.parseInt(map.get("tag"));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         QueryWrapper<Article> queryWrapper = new QueryWrapper<>();
         queryWrapper.like(StringUtils.isNotEmpty(userid), "userid", userid);
         queryWrapper.like(StringUtils.isNotEmpty(content), "content", content);
@@ -193,13 +203,22 @@ public class ArticleController {
             articleModels.add(articleModel);
         }
         //排序
-        articleModels.sort(Comparator.comparing(ArticleModel::getDate));
-        Collections.reverse(articleModels);
-
+        if (tag == 2) {
+            articleModels.sort(Comparator.comparing(ArticleModel::getReadCount));
+            Collections.reverse(articleModels);
+        } else {
+            articleModels.sort(Comparator.comparing(ArticleModel::getDate));
+            Collections.reverse(articleModels);
+        }
         pageEntity.setList(articleModels);
         return pageEntity;
     }
 
+    /**
+     * 获取一条文章的详细信息
+     * @param map
+     * @return
+     */
     @PostMapping("getOneArticle")
     public ArticleModel getOneArticle(@RequestBody Map<String, String> map) {
         String id = map.get("id");
@@ -284,6 +303,11 @@ public class ArticleController {
         return articleModel;
     }
 
+    /**
+     * 添加文章
+     * @param article
+     * @return
+     */
     @PostMapping("addArticle")
     public Map<String, String> addArticle(@RequestBody Article article) {
         Map<String, String> map = new HashMap<>();
@@ -305,6 +329,11 @@ public class ArticleController {
         return map;
     }
 
+    /**
+     * 更新文章
+     * @param article
+     * @return
+     */
     @PostMapping("upArticle")
     public boolean upArticle(@RequestBody Article article) {
         if (article.getUuid() == null || article.getUuid() == "") {
@@ -317,6 +346,10 @@ public class ArticleController {
     }
 
 
+    /**
+     * 删除文章
+     * @param article
+     */
     @PostMapping("deArticle")
     public void deArticle(@RequestBody Article article) {
         QueryWrapper<Article> wrapper = new QueryWrapper<>();

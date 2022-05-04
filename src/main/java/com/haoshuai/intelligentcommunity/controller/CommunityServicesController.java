@@ -44,13 +44,30 @@ public class CommunityServicesController {
     @Autowired
     private IUserService iUserService;
 
+    /**
+     * 根据服务状态和发起的服务的用户 获取服务集合
+     *
+     * @param communityServices
+     * @return
+     */
     @PostMapping("getCommunityServices")
     public List<CommunityServices> getCommunityServices(@RequestBody CommunityServices communityServices) {
         QueryWrapper<CommunityServices> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq(StringUtils.isNotEmpty(communityServices.getState()), "state", communityServices.getState());
+        if (communityServices.getState() != null && communityServices.getState().equals(CommunityServices.state_2)) {
+            queryWrapper.eq("state", CommunityServices.state_2);
+        } else {
+            queryWrapper.ne("state", CommunityServices.state_2);
+        }
+        queryWrapper.eq(StringUtils.isNotEmpty(communityServices.getUserid()), "userid", communityServices.getUserid());
         return iCommunityServicesService.list(queryWrapper);
     }
 
+    /**
+     * 删除服务
+     *
+     * @param communityServices
+     * @return
+     */
     @PostMapping("deleteCommunityServices")
     public boolean deleteCommunityServices(@RequestBody CommunityServices communityServices) {
         if (communityServices.getUuid() != "" && communityServices.getUuid() != null) {
@@ -69,6 +86,12 @@ public class CommunityServicesController {
         return false;
     }
 
+    /**
+     * 更新服务
+     *
+     * @param communityServices
+     * @return
+     */
     @PostMapping("updateCommunityServices")
     public boolean updateCommunityServices(@RequestBody CommunityServices communityServices) {
         if (communityServices.getUuid() != "" && communityServices.getUuid() != null) {
@@ -80,6 +103,12 @@ public class CommunityServicesController {
         }
     }
 
+    /**
+     * 服务分页
+     *
+     * @param map
+     * @return
+     */
     @PostMapping("selectPage")
     public PageEntity selectPage(@RequestBody Map<String, String> map) {
         long current = Long.parseLong(map.get("current"));
@@ -123,6 +152,12 @@ public class CommunityServicesController {
         return pageEntity;
     }
 
+    /**
+     * 添加服务
+     *
+     * @param communityServices
+     * @return
+     */
     @PostMapping("addCommunityServices")
     public boolean addCommunityServices(@RequestBody CommunityServices communityServices) {
         if (communityServices.getUserid() == "" || communityServices.getUserid() == null) {

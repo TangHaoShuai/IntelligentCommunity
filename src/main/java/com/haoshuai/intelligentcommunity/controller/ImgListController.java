@@ -19,6 +19,7 @@ import java.util.List;
 
 /**
  * <p>
+ *     帖子图片
  * 前端控制器
  * </p>
  *
@@ -31,11 +32,20 @@ public class ImgListController {
     @Autowired
     private IImgListService iImgListService;
 
+    /**
+     * 获取图片集合
+     * @return
+     */
     @PostMapping("getImgList")
     public List<ImgList> getList() {
         return iImgListService.list();
     }
 
+    /**
+     * 根据文章ID 获取图片集合
+     * @param article
+     * @return
+     */
     @PostMapping("getByUserImgList")
     public List<ImgList> getByUserImgList(@RequestBody Article article) {
         QueryWrapper<ImgList> wrapper = new QueryWrapper<>();
@@ -43,6 +53,10 @@ public class ImgListController {
         return iImgListService.list(wrapper);
     }
 
+    /**
+     * 更新图片信息
+     * @param imgList
+     */
     @PostMapping("upImgList")
     public void upImgList(ImgList imgList) {
         UpdateWrapper<ImgList> wrapper = new UpdateWrapper<>();
@@ -50,6 +64,11 @@ public class ImgListController {
         iImgListService.update(imgList, wrapper);
     }
 
+    /**
+     * 删除图片
+     * @param imgList
+     * @return
+     */
     @PostMapping("deImgList")
     public boolean deImgList(@RequestBody  ImgList imgList) {
         if (imgList.getUuid() == null && imgList.getUuid() == ""){

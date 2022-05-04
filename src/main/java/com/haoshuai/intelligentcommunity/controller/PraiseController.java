@@ -38,13 +38,19 @@ public class PraiseController {
     @Autowired
     private IUserService iUserService;
 
+    /**
+     * 根据文章ID和点赞者ID 获取点赞集合
+     *
+     * @param praise
+     * @return
+     */
     @PostMapping("getPraises")
-    public List<PraiseModel> getPraises(@RequestBody Praise praise){
+    public List<PraiseModel> getPraises(@RequestBody Praise praise) {
         List<PraiseModel> praiseModels = new ArrayList<>();
-        if (praise.getArticleid() != null && praise.getArticleid() !="" && praise.getUserid() != null && praise.getUserid() != ""){
-            QueryWrapper<Praise>queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("userid",praise.getUserid());
-            queryWrapper.eq("articleid",praise.getArticleid());
+        if (praise.getArticleid() != null && praise.getArticleid() != "" && praise.getUserid() != null && praise.getUserid() != "") {
+            QueryWrapper<Praise> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("userid", praise.getUserid());
+            queryWrapper.eq("articleid", praise.getArticleid());
             List<Praise> praiseList = iPraiseService.list(queryWrapper);
 
             for (Praise p : praiseList) {
@@ -71,6 +77,12 @@ public class PraiseController {
 //        return list;
 //    }
 
+    /**
+     * 删除点赞
+     *
+     * @param praise
+     * @return
+     */
     @PostMapping("deleteParam")
     public boolean deleteParam(@RequestBody Praise praise) {
         if (praise.getUuid() != null && praise.getUuid() != "") {
@@ -81,6 +93,12 @@ public class PraiseController {
         return false;
     }
 
+    /**
+     * 根据文章ID和点赞者ID 获取点赞集合
+     *
+     * @param praise
+     * @return
+     */
     @PostMapping("getPathParam")
     public Praise getPathParam(@RequestBody Praise praise) {
         QueryWrapper<Praise> praiseQueryWrapper = new QueryWrapper<>();
@@ -92,6 +110,12 @@ public class PraiseController {
         return iPraiseService.getOne(praiseQueryWrapper);
     }
 
+    /**
+     * 添加点赞数据
+     *
+     * @param praise
+     * @return
+     */
     @PostMapping("addPraise")
     public String addPraise(@RequestBody Praise praise) {
         if (praise.getArticleid() == null || praise.getArticleid().equals("") || praise.getUserid().equals("") || praise.getUserid() == null) {
@@ -107,6 +131,12 @@ public class PraiseController {
         }
     }
 
+    /**
+     * 删除点赞
+     *
+     * @param praise
+     * @return
+     */
     @PostMapping("deletePraise")
     public String deletePraise(@RequestBody Praise praise) {
         QueryWrapper<Praise> praiseQueryWrapper = new QueryWrapper<>();

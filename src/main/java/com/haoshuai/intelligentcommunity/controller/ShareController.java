@@ -27,7 +27,7 @@ import java.util.UUID;
 
 /**
  * <p>
- * 共享
+ * 社区共享
  * 前端控制器
  * </p>
  *
@@ -44,10 +44,10 @@ public class ShareController {
     private String imgPath = "D:\\TangHaoShuai\\Pictures\\vue_img\\Share\\";// 嵌入二维码的图片路径
 
     @PostMapping("getUserShareList")
-    public List<Share> getUserShareList(@RequestBody Share share){
-        if ((share.getUserid() != ""&& share.getUserid() != null)){
+    public List<Share> getUserShareList(@RequestBody Share share) {
+        if ((share.getUserid() != "" && share.getUserid() != null)) {
             QueryWrapper<Share> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq(StringUtils.isNotEmpty(share.getUserid()),"userid",share.getUserid());
+            queryWrapper.eq(StringUtils.isNotEmpty(share.getUserid()), "userid", share.getUserid());
             return iShareService.list(queryWrapper);
         }
         return null;
@@ -109,7 +109,7 @@ public class ShareController {
 //            JSONObject jsonObject = JSONObject.fromObject(share);
 //            String qrCodeContent = jsonObject.toString(); //二维码的信息
             String qrCodeContent = share.getUuid();
-            String imgPath = this.imgPath + "qrcoe.jpeg"; //设置默认嵌入图片
+            String imgPath = this.imgPath + "qrcoe.jpg"; //设置默认嵌入图片
             Long startTs = System.currentTimeMillis();//时间戳
             String qrImgName = "tsd" + startTs + ".jpg";
             String destPath = this.destPath + qrImgName;//组成输入路径

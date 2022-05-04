@@ -203,6 +203,7 @@ public class FileController {
             if (file1.exists()) {
                 file1.delete();
             }
+            //           跟新物品二维码
             Long startTs = System.currentTimeMillis();//时间戳
             String imgPath = filePath + fileName; //设置嵌入图片
             String qrImgName = "tsd" + startTs + ".jpg";

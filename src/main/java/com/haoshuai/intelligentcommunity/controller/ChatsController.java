@@ -17,6 +17,7 @@ import java.util.List;
 
 /**
  * <p>
+ * 聊天记录
  * 前端控制器
  * </p>
  *
@@ -31,6 +32,9 @@ public class ChatsController {
 
     @PostMapping("/getList")
 
+    /**
+     * 根据发送者接收者获取聊天记录集合
+     */
     public List<Chats> getChats(@RequestBody Chats chats) {
         QueryWrapper<Chats> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("s_name", chats.getsName());
@@ -39,6 +43,10 @@ public class ChatsController {
         return iChatsService.selectAll(chats);
     }
 
+    /**
+     * 添加聊天记录
+     * @param chats
+     */
     @PostMapping("addChat")
     public void addChat(@RequestBody Chats chats) {
         if (!chats.getMessage().equals("")

@@ -127,12 +127,16 @@ public class UserController {
     }
 
     @PostMapping("addUser")
-    public String addUser(@RequestBody User user) {
-        boolean tme = false;
+    public boolean addUser(@RequestBody User user) {
         if (!(user.getPhone().equals("") || user.getPassword().equals(""))) {
-            tme = iUserService.save(user);
+            QueryWrapper<User>queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("phone",user.getPhone());
+            User tempUser = iUserService.getOne(queryWrapper);
+            if (tempUser == null ){
+                return iUserService.save(user);
+            }
         }
-        return tme ? "200" : "500";
+        return false;
     }
 
     @PostMapping("login")

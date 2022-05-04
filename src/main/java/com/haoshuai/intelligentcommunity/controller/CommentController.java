@@ -39,6 +39,11 @@ public class CommentController {
     @Autowired
     private IUserService iUserService;
 
+    /**
+     * 获取评论记录集合
+     * @param comment
+     * @return
+     */
     @PostMapping("getComments")
     public List<CommentModel>getComments(@RequestBody Comment comment){
         List<CommentModel> commentModels = new ArrayList<>();
@@ -66,7 +71,11 @@ public class CommentController {
         return null;
     }
 
-
+    /**
+     * 删除评论记录
+     * @param comment
+     * @return
+     */
     @PostMapping("deleteComment")
     public boolean deleteComment(@RequestBody Comment comment) {
         if (comment.getUuid() != null && comment.getUuid() != "") {
@@ -77,6 +86,11 @@ public class CommentController {
         return false;
     }
 
+    /**
+     * 添加评论记录
+     * @param comment
+     * @return
+     */
     @PostMapping("addComment")
     public boolean addComment(@RequestBody Comment comment) {
         if (comment.getUserid() != "" && comment.getArticleid() != "" && comment.getMessage() != "") {
