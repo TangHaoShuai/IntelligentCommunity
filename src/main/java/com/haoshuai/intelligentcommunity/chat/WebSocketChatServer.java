@@ -86,6 +86,7 @@ public class WebSocketChatServer {
      * 当客户端发送消息：1.获取它的用户名和消息 2.发送消息给所有人
      * <p>
      * PS: 这里约定传递的消息为JSON字符串 方便传递更多参数！
+     * 111:test1:tst3
      */
     @OnMessage
     public void onMessage(Session session, String jsonStr) {
